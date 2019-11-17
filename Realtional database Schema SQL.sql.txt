@@ -1,0 +1,114 @@
+CREATE TABLE Property
+(
+  Property_ID INT NOT NULL,
+  PName INT NOT NULL,
+  Location INT NOT NULL,
+  IS_PetsAllowed INT NOT NULL,
+  No_leased_Apartment INT NOT NULL,
+  No_Vacant_Apartment INT NOT NULL,
+  No_Vacant_Apartment INT NOT NULL,
+  PRIMARY KEY (Property_ID)
+);
+
+CREATE TABLE Individual
+(
+  SSN INT NOT NULL,
+  Name INT NOT NULL,
+  Dob INT NOT NULL,
+  No_of_Household INT NOT NULL,
+  Pets_count INT NOT NULL,
+  PRIMARY KEY (SSN)
+);
+
+CREATE TABLE Leasing_Office
+(
+  Office_Id INT NOT NULL,
+  Manager_ID INT NOT NULL,
+  OfficeLocation INT NOT NULL,
+  ManagerName INT NOT NULL,
+  Property_ID INT NOT NULL,
+  PRIMARY KEY (Office_Id),
+  FOREIGN KEY (Property_ID) REFERENCES Property(Property_ID)
+);
+
+CREATE TABLE Employee
+(
+  ESSN INT NOT NULL,
+  Specality_IN INT NOT NULL,
+  PRIMARY KEY (ESSN)
+);
+
+CREATE TABLE Greviance_Cell
+(
+  Cell_ID INT NOT NULL,
+  ComplaintID INT NOT NULL,
+  Type INT NOT NULL,
+  Complaint_Summary INT NOT NULL,
+  Complaint_Status INT NOT NULL,
+  Assigned_To_Id(SSN) INT NOT NULL,
+  Resolved_By_ID(SSN) INT NOT NULL,
+  PRIMARY KEY (Cell_ID)
+);
+
+CREATE TABLE Has
+(
+  Office_Id INT NOT NULL,
+  ESSN INT NOT NULL,
+  Cell_ID INT NOT NULL,
+  PRIMARY KEY (Office_Id, ESSN, Cell_ID),
+  FOREIGN KEY (Office_Id) REFERENCES Leasing_Office(Office_Id),
+  FOREIGN KEY (ESSN) REFERENCES Employee(ESSN),
+  FOREIGN KEY (Cell_ID) REFERENCES Greviance_Cell(Cell_ID)
+);
+
+CREATE TABLE Complaints_notify/Complaints_resolution
+(
+  Office_Id INT NOT NULL,
+  Cell_ID INT NOT NULL,
+  PRIMARY KEY (Office_Id, Cell_ID),
+  FOREIGN KEY (Office_Id) REFERENCES Leasing_Office(Office_Id),
+  FOREIGN KEY (Cell_ID) REFERENCES Greviance_Cell(Cell_ID)
+);
+
+CREATE TABLE Logs_complaint_At
+(
+  Office_Id INT NOT NULL,
+  SSN INT NOT NULL,
+  PRIMARY KEY (Office_Id, SSN),
+  FOREIGN KEY (Office_Id) REFERENCES Leasing_Office(Office_Id),
+  FOREIGN KEY (SSN) REFERENCES Individual(SSN)
+);
+
+CREATE TABLE Property_Apartment_type
+(
+  Apartment_type INT NOT NULL,
+  Property_ID INT NOT NULL,
+  PRIMARY KEY (Apartment_type, Property_ID),
+  FOREIGN KEY (Property_ID) REFERENCES Property(Property_ID)
+);
+
+CREATE TABLE Apartment
+(
+  Apt_Number INT NOT NULL,
+  Identifier INT NOT NULL,
+  A_status(leased/own/Vacant) INT NOT NULL,
+  Lease_Start_Date/Purchased_Date INT NOT NULL,
+  Month INT NOT NULL,
+  Paid_Rental_amount INT NOT NULL,
+  Actual_Annual_Rent/Purchased_Amount INT NOT NULL,
+  Annual_Unit_Inspection_Status(Yes_or_no) INT NOT NULL,
+  Office_Id INT NOT NULL,
+  PRIMARY KEY (Apt_Number, Identifier),
+  FOREIGN KEY (Office_Id) REFERENCES Leasing_Office(Office_Id)
+);
+
+CREATE TABLE Leased/Owned
+(
+  Apt_Number INT NOT NULL,
+  Identifier INT NOT NULL,
+  SSN INT NOT NULL,
+  PRIMARY KEY (Apt_Number, Identifier),
+  FOREIGN KEY (Apt_Number, Identifier) REFERENCES Apartment(Apt_Number, Identifier),
+  FOREIGN KEY (SSN) REFERENCES Individual(SSN)
+);
+ 
